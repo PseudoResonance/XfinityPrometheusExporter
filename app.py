@@ -114,7 +114,7 @@ async def landing_handler(request):
   if debug:
     print("Received landing GET from " + request.remote)
     sys.stdout.flush()
-  return web.Response(content_type='text/html',body='<!DOCTYPE html><title>Netgear Modem Exporter</title><h1>Netgear Modem Exporter</h1><p><a href="/metrics">Metrics</a></p>')
+  return web.Response(content_type='text/html',body='<!DOCTYPE html><title>XFINITY Modem Exporter</title><h1>XFINITY Modem Exporter</h1><p><a href="/metrics">Metrics</a></p>')
 
 async def web_handler(request):
   if debug:
