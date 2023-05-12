@@ -116,6 +116,12 @@ async def landing_handler(request):
     sys.stdout.flush()
   return web.Response(content_type='text/html',body='<!DOCTYPE html><title>XFINITY Modem Exporter</title><h1>XFINITY Modem Exporter</h1><p><a href="/metrics">Metrics</a></p>')
 
+def parse_frequency(text):
+  if "mhz" in text.lower():
+    return str(int(re.sub("[^0-9.\-]", "", text)) * 1000000)
+  else:
+    return re.sub("[^0-9.\-]", "", text)
+
 async def web_handler(request):
   if debug:
     print("Received GET from " + request.remote)
@@ -136,7 +142,7 @@ async def web_handler(request):
   data_string += "# TYPE downstream_bonded_channel_frequency gauge" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
     if entry["Modulation"] != "OFDM":
-      data_string += "downstream_bonded_channel_frequency{number=\"" + str(i) + "\",channel_id=\"" + entry["Index"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\-]", "", entry["Frequency"]) + "\n"
+      data_string += "downstream_bonded_channel_frequency{number=\"" + str(i) + "\",channel_id=\"" + entry["Index"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + parse_frequency(entry["Frequency"]) + "\n"
   data_string += "# HELP downstream_bonded_channel_power Channel power in dBmV" + "\n"
   data_string += "# TYPE downstream_bonded_channel_power gauge" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
@@ -169,7 +175,7 @@ async def web_handler(request):
   data_string += "# TYPE upstream_bonded_channel_frequency gauge" + "\n"
   for i, entry in enumerate(data["Upstream Channels"]):
     if entry["Channel Type"] != "OFDMA":
-      data_string += "upstream_bonded_channel_frequency{number=\"" + str(i) + "\",channel_id=\"" + entry["Index"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\",channel_type=\"" + entry["Channel Type"] + "\"} " + re.sub("[^0-9.\-]", "", entry["Frequency"]) + "\n"
+      data_string += "upstream_bonded_channel_frequency{number=\"" + str(i) + "\",channel_id=\"" + entry["Index"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\",channel_type=\"" + entry["Channel Type"] + "\"} " + parse_frequency(entry["Frequency"]) + "\n"
   data_string += "# HELP upstream_bonded_channel_power Channel power in dBmV" + "\n"
   data_string += "# TYPE upstream_bonded_channel_power gauge" + "\n"
   for i, entry in enumerate(data["Upstream Channels"]):
@@ -187,7 +193,7 @@ async def web_handler(request):
   data_string += "# TYPE downstream_ofdm_channel_frequency gauge" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
     if entry["Modulation"] == "OFDM":
-      data_string += "downstream_ofdm_channel_frequency{number=\"" + str(i) + "\",channel_id=\"" + entry["Index"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\-]", "", entry["Frequency"]) + "\n"
+      data_string += "downstream_ofdm_channel_frequency{number=\"" + str(i) + "\",channel_id=\"" + entry["Index"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + parse_frequency(entry["Frequency"]) + "\n"
   data_string += "# HELP downstream_ofdm_channel_power Channel power in dBmV" + "\n"
   data_string += "# TYPE downstream_ofdm_channel_power gauge" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
@@ -220,7 +226,7 @@ async def web_handler(request):
   data_string += "# TYPE upstream_ofdma_channel_frequency gauge" + "\n"
   for i, entry in enumerate(data["Upstream Channels"]):
     if entry["Channel Type"] == "OFDMA":
-      data_string += "upstream_ofdma_channel_frequency{number=\"" + str(i) + "\",channel_id=\"" + entry["Index"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\",channel_type=\"" + entry["Channel Type"] + "\"} " + re.sub("[^0-9.\-]", "", entry["Frequency"]) + "\n"
+      data_string += "upstream_ofdma_channel_frequency{number=\"" + str(i) + "\",channel_id=\"" + entry["Index"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\",channel_type=\"" + entry["Channel Type"] + "\"} " + parse_frequency(entry["Frequency"]) + "\n"
   data_string += "# HELP upstream_ofdma_channel_power Channel power in dBmV" + "\n"
   data_string += "# TYPE upstream_ofdma_channel_power gauge" + "\n"
   for i, entry in enumerate(data["Upstream Channels"]):
