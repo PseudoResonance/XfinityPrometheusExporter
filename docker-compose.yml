@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  xfinityexporter:
+    env_file:
+      - .env
+    ports:
+      - 15834:15834
+    build: ./
+    restart: unless-stopped
+    command: "--debug"

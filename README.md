@@ -9,9 +9,8 @@ A Dockerfile is provided to build a Docker container to run the exporter, howeve
 ### Docker Quickstart Guide
 
 1. Clone the repository to a directory of your choice.
-2. From inside the directory, run `docker build -t xfinityexporter:1.0 .` to build the Dockerfile.
-3. Create an environment variable file, `.env` in the directory with the application, and configure it with your modem login credentials. (ex: `MODEM_PASSWORD=password123`)
-4. If it builds successfully, run the exporter with `docker run -d --env-file ./.env -p 15834:15834 --restart=unless-stopped xfinityexporter:1.0`
+2. Create an environment variable file, `.env` in the directory with the application, and configure it with your modem login credentials. (ex: `MODEM_PASSWORD=password123`)
+3. Build the image with `docker compose build` and run it with `docker compose up -d`.
 
 ### Prerequisites
 

@@ -28,7 +28,7 @@ def login():
 
 def get_status(session):
   status_page = session.get(ENDPOINT + "/network_setup.jst")
-  status_page_html = html.fromstring(status_page.text)
+  status_page_html = html.fromstring(bytes(status_page.text, encoding='utf8'))
   return status_page_html
 
 async def parse_status(status):
