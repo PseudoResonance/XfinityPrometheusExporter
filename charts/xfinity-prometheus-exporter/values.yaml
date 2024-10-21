@@ -48,6 +48,9 @@ metrics:
   serviceMonitorExtraSpec: {}
   serviceMonitorExtraEndpoint:
     interval: 60s
+    metricRelabelings:
+      - action: labeldrop
+        regex: "instance|pod"
 
 ingress:
   enabled: false
