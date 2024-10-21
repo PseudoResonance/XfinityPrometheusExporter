@@ -4,7 +4,7 @@ A Prometheus exporter for XFINITY modems.
 
 ## Installation
 
-A Dockerfile is provided to build a Docker container to run the exporter, however it can also be run outside Docker.
+A Dockerfile is provided to build a Docker container to run the exporter. Additionally, a Kubernetes Helm chart is included for easy deployment alongside [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator/), however it can also be run as a standalone application.
 
 ### Docker Quickstart Guide
 

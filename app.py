@@ -54,7 +54,7 @@ async def parse_table(data, status, table_name, table_id):
   data[table_name] = []
   columns = []
   valid_data = False
-  for i, row in enumerate(status.xpath('//*[@id="content"]/div[@class="module"][' + table_id + ']/table/tbody/tr')):
+  for i, row in enumerate(status.xpath('//*[@id="content"]/div[@class="module netFlow"][' + table_id + ']/table/tbody/tr')):
     for j, col in enumerate(row):
       if j > 0:
         column_data = None
@@ -118,9 +118,9 @@ async def landing_handler(request):
 
 def parse_frequency(text):
   if "mhz" in text.lower():
-    return str(int(re.sub("[^0-9.\-]", "", text)) * 1000000)
+    return str(int(re.sub("[^0-9.\\-]", "", text)) * 1000000)
   else:
-    return re.sub("[^0-9.\-]", "", text)
+    return re.sub("[^0-9.\\-]", "", text)
 
 async def web_handler(request):
   if debug:
@@ -147,27 +147,27 @@ async def web_handler(request):
   data_string += "# TYPE downstream_bonded_channel_power gauge" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
     if entry["Modulation"] != "OFDM":
-      data_string += "downstream_bonded_channel_power{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\-]", "", entry["Power Level"]) + "\n"
+      data_string += "downstream_bonded_channel_power{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\\-]", "", entry["Power Level"]) + "\n"
   data_string += "# HELP downstream_bonded_channel_snr Channel SNR/MER in dB" + "\n"
   data_string += "# TYPE downstream_bonded_channel_snr gauge" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
     if entry["Modulation"] != "OFDM":
-      data_string += "downstream_bonded_channel_snr{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\-]", "", entry["SNR"]) + "\n"
+      data_string += "downstream_bonded_channel_snr{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\\-]", "", entry["SNR"]) + "\n"
   data_string += "# HELP downstream_bonded_channel_unerrored_codewords Total codewords received without error" + "\n"
   data_string += "# TYPE downstream_bonded_channel_unerrored_codewords counter" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
     if entry["Modulation"] != "OFDM":
-      data_string += "downstream_bonded_channel_unerrored_codewords{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\-]", "", data["CM Error Codewords"][i]["Unerrored Codewords"]) + "\n"
+      data_string += "downstream_bonded_channel_unerrored_codewords{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\\-]", "", data["CM Error Codewords"][i]["Unerrored Codewords"]) + "\n"
   data_string += "# HELP downstream_bonded_channel_correctable_codewords Total codewords received requiring correction" + "\n"
   data_string += "# TYPE downstream_bonded_channel_correctable_codewords counter" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
     if entry["Modulation"] != "OFDM":
-      data_string += "downstream_bonded_channel_correctable_codewords{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\-]", "", data["CM Error Codewords"][i]["Correctable Codewords"]) + "\n"
+      data_string += "downstream_bonded_channel_correctable_codewords{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\\-]", "", data["CM Error Codewords"][i]["Correctable Codewords"]) + "\n"
   data_string += "# HELP downstream_bonded_channel_uncorrectable_codewords Total codewords received uncorrectable" + "\n"
   data_string += "# TYPE downstream_bonded_channel_uncorrectable_codewords counter" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
     if entry["Modulation"] != "OFDM":
-      data_string += "downstream_bonded_channel_uncorrectable_codewords{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\-]", "", data["CM Error Codewords"][i]["Uncorrectable Codewords"]) + "\n"
+      data_string += "downstream_bonded_channel_uncorrectable_codewords{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\\-]", "", data["CM Error Codewords"][i]["Uncorrectable Codewords"]) + "\n"
   
   # Upstream Channels
   data_string += "\n"
@@ -180,12 +180,12 @@ async def web_handler(request):
   data_string += "# TYPE upstream_bonded_channel_power gauge" + "\n"
   for i, entry in enumerate(data["Upstream Channels"]):
     if entry["Channel Type"] != "OFDMA":
-      data_string += "upstream_bonded_channel_power{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\",channel_type=\"" + entry["Channel Type"] + "\"} " + re.sub("[^0-9.\-]", "", entry["Power Level"]) + "\n"
+      data_string += "upstream_bonded_channel_power{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\",channel_type=\"" + entry["Channel Type"] + "\"} " + re.sub("[^0-9.\\-]", "", entry["Power Level"]) + "\n"
   data_string += "# HELP upstream_bonded_channel_symbol_rate Symbol rate in KSym/s" + "\n"
   data_string += "# TYPE upstream_bonded_channel_symbol_rate gauge" + "\n"
   for i, entry in enumerate(data["Upstream Channels"]):
     if entry["Channel Type"] != "OFDMA":
-      data_string += "upstream_bonded_channel_symbol_rate{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\",channel_type=\"" + entry["Channel Type"] + "\"} " + re.sub("[^0-9.\-]", "", entry["Symbol Rate"]) + "\n"
+      data_string += "upstream_bonded_channel_symbol_rate{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\",channel_type=\"" + entry["Channel Type"] + "\"} " + re.sub("[^0-9.\\-]", "", entry["Symbol Rate"]) + "\n"
   
   # Downstream OFDM Channels
   data_string += "\n"
@@ -198,27 +198,27 @@ async def web_handler(request):
   data_string += "# TYPE downstream_ofdm_channel_power gauge" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
     if entry["Modulation"] == "OFDM":
-      data_string += "downstream_ofdm_channel_power{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\-]", "", entry["Power Level"]) + "\n"
+      data_string += "downstream_ofdm_channel_power{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\\-]", "", entry["Power Level"]) + "\n"
   data_string += "# HELP downstream_ofdm_channel_snr Channel SNR/MER in dB" + "\n"
   data_string += "# TYPE downstream_ofdm_channel_snr gauge" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
     if entry["Modulation"] == "OFDM":
-      data_string += "downstream_ofdm_channel_snr{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\-]", "", entry["SNR"]) + "\n"
+      data_string += "downstream_ofdm_channel_snr{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\\-]", "", entry["SNR"]) + "\n"
   data_string += "# HELP downstream_ofdm_channel_unerrored_codewords Total codewords received without error" + "\n"
   data_string += "# TYPE downstream_ofdm_channel_unerrored_codewords counter" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
     if entry["Modulation"] == "OFDM":
-      data_string += "downstream_ofdm_channel_unerrored_codewords{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\-]", "", data["CM Error Codewords"][i]["Unerrored Codewords"]) + "\n"
+      data_string += "downstream_ofdm_channel_unerrored_codewords{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\\-]", "", data["CM Error Codewords"][i]["Unerrored Codewords"]) + "\n"
   data_string += "# HELP downstream_ofdm_channel_correctable_codewords Total codewords received requiring correction" + "\n"
   data_string += "# TYPE downstream_ofdm_channel_correctable_codewords counter" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
     if entry["Modulation"] == "OFDM":
-      data_string += "downstream_ofdm_channel_correctable_codewords{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\-]", "", data["CM Error Codewords"][i]["Correctable Codewords"]) + "\n"
+      data_string += "downstream_ofdm_channel_correctable_codewords{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\\-]", "", data["CM Error Codewords"][i]["Correctable Codewords"]) + "\n"
   data_string += "# HELP downstream_ofdm_channel_uncorrectable_codewords Total codewords received uncorrectable" + "\n"
   data_string += "# TYPE downstream_ofdm_channel_uncorrectable_codewords counter" + "\n"
   for i, entry in enumerate(data["Downstream Channels"]):
     if entry["Modulation"] == "OFDM":
-      data_string += "downstream_ofdm_channel_uncorrectable_codewords{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\-]", "", data["CM Error Codewords"][i]["Uncorrectable Codewords"]) + "\n"
+      data_string += "downstream_ofdm_channel_uncorrectable_codewords{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\"} " + re.sub("[^0-9.\\-]", "", data["CM Error Codewords"][i]["Uncorrectable Codewords"]) + "\n"
   
   # Upstream OFDMA Channels
   data_string += "\n"
@@ -231,12 +231,12 @@ async def web_handler(request):
   data_string += "# TYPE upstream_ofdma_channel_power gauge" + "\n"
   for i, entry in enumerate(data["Upstream Channels"]):
     if entry["Channel Type"] == "OFDMA":
-      data_string += "upstream_ofdma_channel_power{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\",channel_type=\"" + entry["Channel Type"] + "\"} " + re.sub("[^0-9.\-]", "", entry["Power Level"]) + "\n"
+      data_string += "upstream_ofdma_channel_power{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\",channel_type=\"" + entry["Channel Type"] + "\"} " + re.sub("[^0-9.\\-]", "", entry["Power Level"]) + "\n"
   data_string += "# HELP upstream_ofdma_channel_symbol_rate Symbol rate in KSym/s" + "\n"
   data_string += "# TYPE upstream_ofdma_channel_symbol_rate gauge" + "\n"
   for i, entry in enumerate(data["Upstream Channels"]):
     if entry["Channel Type"] == "OFDMA":
-      data_string += "upstream_ofdma_channel_symbol_rate{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\",channel_type=\"" + entry["Channel Type"] + "\"} " + re.sub("[^0-9.\-]", "", entry["Symbol Rate"]) + "\n"
+      data_string += "upstream_ofdma_channel_symbol_rate{number=\"" + str(i) + "\",channel_id=\"" + entry["Channel ID"] + "\",lock_status=\"" + ("0" if entry["Lock Status"].lower() != "locked" else "1") + "\",modulation=\"" + entry["Modulation"] + "\",channel_type=\"" + entry["Channel Type"] + "\"} " + re.sub("[^0-9.\\-]", "", entry["Symbol Rate"]) + "\n"
   
   return web.Response(text=data_string)
 

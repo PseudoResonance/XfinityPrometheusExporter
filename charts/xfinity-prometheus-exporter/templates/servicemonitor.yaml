@@ -1,0 +1,20 @@
+{{- if .Values.metrics.serviceMonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "xfinity-prometheus-exporter.fullname" . }}
+  labels:
+    {{- include "xfinity-prometheus-exporter.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "xfinity-prometheus-exporter.selectorLabels" . | nindent 6 }}
+  endpoints:
+    - port: http
+      {{- with .Values.metrics.serviceMonitorExtraEndpoint }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+  {{- with .Values.metrics.serviceMonitorExtraSpec }}
+    {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}

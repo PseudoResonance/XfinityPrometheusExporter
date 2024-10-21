@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "xfinity-prometheus-exporter.fullname" . }}
+  labels:
+    {{- include "xfinity-prometheus-exporter.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "xfinity-prometheus-exporter.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "xfinity-prometheus-exporter.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.debug }}
+          args: ["-d"]
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: SERVER_PORT
+              value: "{{ .Values.service.port }}"
+            - name: MODEM_ENDPOINT
+              {{- if and .Values.modemConfig.existingSecretName .Values.modemConfig.endpointKey }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.modemConfig.existingSecretName }}
+                  key: {{ .Values.modemConfig.endpointKey }}
+              {{- else }}
+              value: "{{ .Values.modemConfig.endpoint }}"
+              {{- end }}
+            - name: MODEM_USERNAME
+              {{- if and .Values.modemConfig.existingSecretName .Values.modemConfig.usernameKey }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.modemConfig.existingSecretName }}
+                  key: {{ .Values.modemConfig.usernameKey }}
+              {{- else }}
+              value: {{ .Values.modemConfig.username }}
+              {{- end }}
+            - name: MODEM_PASSWORD
+              {{- if and .Values.modemConfig.existingSecretName .Values.modemConfig.passwordKey }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.modemConfig.existingSecretName }}
+                  key: {{ .Values.modemConfig.passwordKey }}
+              {{- else }}
+              value: {{ .Values.modemConfig.password }}
+              {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
