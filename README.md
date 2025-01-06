@@ -12,6 +12,21 @@ A Dockerfile is provided to build a Docker container to run the exporter. Additi
 2. Create an environment variable file, `.env` in the directory with the application, and configure it with your modem login credentials. (ex: `MODEM_PASSWORD=password123`)
 3. Build the image with `docker compose build` and run it with `docker compose up -d`.
 
+### Helm Quickstart Guide
+
+1. Install the Helm repo.
+```sh
+helm repo add xfinity-prometheus-exporter https://pseudoresonance.github.io/XfinityPrometheusExporter/
+```
+2. Fetch the values file and configure it to connect to your modem.
+```sh
+helm show values xfinity-prometheus-exporter/xfinity-prometheus-exporter > values.yaml
+```
+3. Install the chart.
+```sh
+helm install xfinity-prometheus-exporter xfinity-prometheus-exporter/xfinity-prometheus-exporter -n xfinity-prometheus-exporter -f values.yaml
+```
+
 ### Prerequisites
 
  - Python 3.10
