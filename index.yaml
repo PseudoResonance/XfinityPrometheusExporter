@@ -1,0 +1,15 @@
+apiVersion: v1
+entries:
+  xfinity-prometheus-exporter:
+  - apiVersion: v2
+    appVersion: "1.5"
+    created: "2025-01-06T06:03:10.122997011Z"
+    description: Deploys a Prometheus exporter for an Xfinity modem's signal quality
+      statistics.
+    digest: 87950389d4bef471686f13eb01a78791f5d1cb6208ab2cc4186437b4466a010e
+    name: xfinity-prometheus-exporter
+    type: application
+    urls:
+    - https://github.com/PseudoResonance/XfinityPrometheusExporter/releases/download/xfinity-prometheus-exporter-1.0.0/xfinity-prometheus-exporter-1.0.0.tgz
+    version: 1.0.0
+generated: "2025-01-06T06:03:10.12300688Z"
